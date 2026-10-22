@@ -1,4 +1,4 @@
-package com.astra.agent.ui
+﻿package com.astra.agent.ui
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -229,24 +229,26 @@ private fun ProjectList(st: CodeState) {
 private fun Workbench(st: CodeState, s: Settings, scope: CoroutineScope) {
     val c = LocalIos.current
     val tabs = listOf("Files", "Editor", "AI", "Terminal", "History")
-    Row(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        PillButton("\u2039 Projects") { st.closeProject() }
-        Text(st.project ?: "", Modifier.weight(1f), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = c.text, maxLines = 1)
-        PillButton("\u25B6 Run", c.green) { st.previewProject() }
-    }
-    Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        tabs.forEachIndexed { i, t -> PillButton(t, if (st.tab == i) c.accent else c.sub) { st.tab = i } }
-    }
-    Box(Modifier.weight(1f).fillMaxWidth()) {
-        when (st.tab) {
-            0 -> FilesTab(st)
-            1 -> EditorTab(st)
-            2 -> AiTab(st, s, scope)
-            3 -> TerminalTab(st, scope)
-            else -> HistoryTab(st, scope)
+    Column(Modifier.fillMaxSize()) {
+        Row(Modifier.fillMaxWidth().padding(start = 12.dp, end = 12.dp, top = 10.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            PillButton("\u2039 Projects") { st.closeProject() }
+            Text(st.project ?: "", Modifier.weight(1f), fontSize = 17.sp, fontWeight = FontWeight.Bold, color = c.text, maxLines = 1)
+            PillButton("\u25B6 Run", c.green) { st.previewProject() }
         }
+        Row(Modifier.fillMaxWidth().horizontalScroll(rememberScrollState()).padding(horizontal = 12.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            tabs.forEachIndexed { i, t -> PillButton(t, if (st.tab == i) c.accent else c.sub) { st.tab = i } }
+        }
+        Box(Modifier.weight(1f).fillMaxWidth()) {
+            when (st.tab) {
+                0 -> FilesTab(st)
+                1 -> EditorTab(st)
+                2 -> AiTab(st, s, scope)
+                3 -> TerminalTab(st, scope)
+                else -> HistoryTab(st, scope)
+            }
+        }
+        if (st.message.isNotBlank()) Text(st.message, Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), color = c.sub, fontSize = 12.sp, maxLines = 2)
     }
-    if (st.message.isNotBlank()) Text(st.message, Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp), color = c.sub, fontSize = 12.sp, maxLines = 2)
 }
 
 @Composable
